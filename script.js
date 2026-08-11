@@ -2,7 +2,7 @@ import { db } from './firebase-config.js';
 import { doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
 document.addEventListener('DOMContentLoaded', () => {
-    let currentServerIP = 'Roblox Hamburg RP'; // Default
+    let currentServerIP = 'Rocket League Sideswipe'; // Default
 
     // Firestore Live Listener
     const configRef = doc(db, 'config', 'website');
@@ -121,7 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         } catch (error) {
-            console.error('Error fetching Roblox avatar for', imgId, error);
+            console.error('Error fetching avatar for', imgId, error);
         }
     }
 

@@ -226,8 +226,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 <button type="button" class="btn btn-secondary remove-staff-btn" style="padding: 5px 10px; font-size: 0.8rem; flex: unset;"><i class="fa-solid fa-trash"></i> Verwijder Staf</button>
             </div>
             <div style="display: flex; gap: 10px; margin-bottom: 10px; width: 100%;">
-                <input type="text" class="staff-name" placeholder="Roblox Name" value="${name}" style="flex: 2;">
-                <input type="text" class="staff-id" placeholder="Roblox ID (cijfers)" value="${userid}" style="flex: 1;">
+                <input type="text" class="staff-name" placeholder="Player Name" value="${name}" style="flex: 2;">
+                <input type="text" class="staff-id" placeholder="Avatar ID (cijfers)" value="${userid}" style="flex: 1;">
             </div>
             <div class="badges-container" style="display: flex; flex-direction: column; gap: 10px; width: 100%;">
                 <!-- badges here -->
@@ -662,12 +662,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     const defaultConfig = {
-        serverIP: 'Roblox Hamburg RP',
+        serverIP: 'Rocket League Sideswipe',
         discordLink: 'https://discord.gg/mQt4J5Brug',
         hasNewUpdates: false,
         staff: [
-            { name: 'tienmaster10', userid: '2434076326', badges: [{rank: 'OWNER', rankClass: 'owner-badge'}] },
-            { name: 'j3ss3_0182', userid: '12345678', badges: [{rank: 'CO-OWNER', rankClass: 'co-owner-badge'}] }
+            { name: 'tienmaster10', userid: '2434076326', badges: [{rank: 'OWNER', rankClass: 'owner-badge'}] }
         ],
         updates: [
             {

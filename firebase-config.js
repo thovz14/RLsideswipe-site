@@ -40,5 +40,7 @@ if (typeof document !== 'undefined') {
                 document.body.style.backgroundImage = 'none';
             }
         }
+    }, (error) => {
+        console.warn('Background config listener error (dit is normaal als rules strict zijn of je nog niet bent ingelogd):', error.message);
     });
 }
