@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     try {
         // Fetching community tournaments from Reddit via RSS to JSON converter
-        const feedUrl = 'https://www.reddit.com/r/RLSideswipe/search.rss?q=tournament+OR+esports&restrict_sr=1&sort=new';
+        const feedUrl = 'https://www.reddit.com/r/RLSideswipe/search.rss?q=tournament%20OR%20esports&restrict_sr=1&sort=new&t=' + Math.floor(Date.now() / 3600000); // 1 hour cachebuster
         const response = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feedUrl)}`);
         const data = await response.json();
         
@@ -50,13 +50,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                 tournamentsContainer.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 2rem;">No recent tournaments found.</p>';
             }
         } else {
-            throw new Error("Invalid response format");
+            throw new Error(data.message || "Invalid response format");
         }
     } catch (err) {
         console.error('Error fetching tournaments:', err);
         tournamentsContainer.innerHTML = `
             <div class="update-card" style="text-align: center;">
-                <p>Failed to load tournaments at this time. Please try again later.</p>
+                <p>Failed to load tournaments at this time (${err.message}). Please try again later.</p>
             </div>
         `;
     }
