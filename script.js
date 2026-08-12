@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Render with a placeholder first
                     card.innerHTML = `
                         <div class="avatar-wrapper">
-                            <img src="${staff.avatar || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(staff.name) + '&background=f5f5f5&color=333'}" alt="${staff.name}" class="owner-avatar">
+                            <img src="https://tr.rbxcdn.com/38c6edcb50633730fa4afbc5c7011b71/150/150/AvatarHeadshot/Png" alt="${staff.name}" class="owner-avatar" id="avatar-${staff.name.replace(/\s+/g, '-')}-${Math.random().toString(36).substring(7)}">
                         </div>
                         <div class="owner-info">
                             <h3>${staff.name}</h3>
@@ -56,6 +56,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     `;
                     
                     ownersContainer.appendChild(card);
+                    
+                    if (staff.userid) {
+                        // Pass the exact image element id
+                        const imgId = card.querySelector('.owner-avatar').id;
+                        fetchAvatar(staff.userid, imgId);
+                    }
                 });
             };
 
@@ -102,7 +108,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-
+    async function fetchAvatar(userId, imgId) {
+        try {
+            const avatarResponse = await fetch(`https://thumbnails.roproxy.com/v1/users/avatar-headshot?userIds=${userId}&size=150x150&format=Png&isCircular=false`);
+            const avatarData = await avatarResponse.json();
+            
+            if (avatarData && avatarData.data && avatarData.data.length > 0) {
+                const avatarUrl = avatarData.data[0].imageUrl;
+                const imgEl = document.getElementById(imgId);
+                if (imgEl && avatarUrl) {
+                    imgEl.src = avatarUrl;
+                }
+            }
+        } catch (error) {
+            console.error('Error fetching avatar for', imgId, error);
+        }
+    }
 
     // Copy Widget Logic
     const copyables = document.querySelectorAll('.copyable');
