@@ -4,23 +4,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rocket League Sideswipe - Updates</title>
-    <meta name="description" content="Rocket League Sideswipe Official Website Updates">
-    <link rel="stylesheet" href="style.css?v=4">
+    <title>Rocket League Sideswipe - Live News</title>
+    <meta name="description" content="Rocket League Sideswipe Live News">
+    <link rel="stylesheet" href="style.css?v=5">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://www.youtube-nocookie.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body>
-    <!-- Removed video background -->
-
     <nav class="top-nav">
         <a href="index.html" class="nav-link">Home</a>
-        <a href="updates.html" class="nav-link active">Updates</a>
-        <a href="news.html" class="nav-link">News</a>
+        <a href="updates.html" class="nav-link">Updates</a>
+        <a href="news.html" class="nav-link active">News</a>
         <a href="tournaments.html" class="nav-link">Tournaments</a>
         <a href="social-media.html" class="nav-link">Socials</a>
         <a href="admin.html" class="nav-link">Admin</a>
@@ -29,11 +26,14 @@
     <main class="container">
         <section class="updates">
             <div class="updates-header">
-                <span class="pill">UPDATES</span>
+                <span class="pill" style="border-color: var(--accent-gold); color: var(--accent-gold); box-shadow: 0 0 10px rgba(243, 156, 18, 0.2);">LIVE SIDESWIPE NEWS</span>
             </div>
 
-            <div class="update-cards" id="updates-container">
-                <!-- Updates will be loaded here dynamically from script.js -->
+            <div class="update-cards" id="news-container">
+                <div class="update-card" style="align-items: center; justify-content: center; min-height: 200px;">
+                    <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: var(--accent-gold); margin-bottom: 1rem;"></i>
+                    <p>Live nieuws wordt geladen...</p>
+                </div>
             </div>
         </section>
     </main>
@@ -42,7 +42,7 @@
         Ontworpen door <a href="https://accounts.wonderdev.nl" target="_blank">wonderlight studios</a>
     </footer>
 
-    <script type="module" src="script.js"></script>
+    <script type="module" src="news.js?v=6"></script>
 </body>
 
 </html>
