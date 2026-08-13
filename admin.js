@@ -18,10 +18,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const addSocialBtn = document.getElementById('add-social-btn');
     const updatesListContainer = document.getElementById('updates-list');
     const addUpdateBtn = document.getElementById('add-update-btn');
-    const newsListContainer = document.getElementById('news-list');
-    const addNewsBtn = document.getElementById('add-news-btn');
-    const tournamentsListContainer = document.getElementById('tournaments-list');
-    const addTournamentBtn = document.getElementById('add-tournament-btn');
     const saveStatus = document.getElementById('save-status');
     const configUpdatesBadge = document.getElementById('config-updates-badge');
     const configUpdatesDuration = document.getElementById('config-updates-duration');
@@ -132,27 +128,6 @@ document.addEventListener('DOMContentLoaded', () => {
             buttonLink: row.querySelector('.update-btn-link').value,
             buttonClass: row.querySelector('.update-btn-class').value
         }));
-        const newsInputs = document.querySelectorAll('.news-input-row:not(.new-news-form)');
-        const news = Array.from(newsInputs).map(row => ({
-            date: row.querySelector('.news-date').value,
-            title: row.querySelector('.news-title').value,
-            description: row.querySelector('.news-description').value,
-            hasButton: row.querySelector('.news-btn-toggle').checked,
-            buttonText: row.querySelector('.news-btn-text').value,
-            buttonLink: row.querySelector('.news-btn-link').value,
-            buttonClass: row.querySelector('.news-btn-class').value
-        }));
-
-        const tournamentsInputs = document.querySelectorAll('.tournament-input-row:not(.new-tournament-form)');
-        const tournaments = Array.from(tournamentsInputs).map(row => ({
-            date: row.querySelector('.tournament-date').value,
-            title: row.querySelector('.tournament-title').value,
-            description: row.querySelector('.tournament-description').value,
-            hasButton: row.querySelector('.tournament-btn-toggle').checked,
-            buttonText: row.querySelector('.tournament-btn-text').value,
-            buttonLink: row.querySelector('.tournament-btn-link').value,
-            buttonClass: row.querySelector('.tournament-btn-class').value
-        }));
 
 
         const socialInputs = document.querySelectorAll('.social-input-row');
@@ -183,8 +158,6 @@ document.addEventListener('DOMContentLoaded', () => {
             updatesBadgeExpiresAt: expiresAt,
             staff: staff,
             updates: updates,
-            news: news,
-            tournaments: tournaments,
             socialMedia: socialMedia
         };
 
@@ -769,286 +742,6 @@ document.addEventListener('DOMContentLoaded', () => {
         updatesListContainer.appendChild(div);
     }
 
-function createNewsInput(date = '', title = '', description = '', hasButton = true, buttonText = '', buttonLink = 'index.html', buttonClass = 'btn-primary', isNew = false) {
-        const div = document.createElement('div');
-        div.className = 'news-input-row' + (isNew ? ' new-news-form' : '');
-        div.draggable = false;
-        div.style.border = isNew ? '2px dashed var(--accent-gold)' : '1px solid var(--card-border)';
-        div.style.padding = '15px';
-        div.style.marginBottom = '15px';
-        div.style.borderRadius = '8px';
-        div.style.cursor = isNew ? 'default' : 'grab';
-        div.style.backgroundColor = 'var(--card-bg)';
-        div.style.transition = 'opacity 0.2s';
-        
-        div.innerHTML = `
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
-                <div class="drag-handle" style="color: var(--text-muted); padding: 5px; cursor: ${isNew ? 'default' : 'grab'};">
-                    ${isNew ? '<i class="fa-solid fa-plus"></i> Nieuwe News Maken' : '<i class="fa-solid fa-grip-vertical"></i> Sleep om te verplaatsen'}
-                </div>
-                ${isNew ? '<button type="button" class="btn btn-secondary cancel-news-btn" style="padding: 5px 10px; font-size: 0.8rem;"><i class="fa-solid fa-xmark"></i> Annuleren</button>' : '<button type="button" class="btn btn-secondary remove-news-btn" style="padding: 5px 10px; font-size: 0.8rem;"><i class="fa-solid fa-trash"></i> Verwijder News</button>'}
-            </div>
-            <div class="form-group"><input type="text" class="news-date" placeholder="Date (e.g. MAY 2 2026)" value="${date}"></div>
-            <div class="form-group"><input type="text" class="news-title" placeholder="Title" value="${title}"></div>
-            <div class="form-group"><textarea class="news-description" placeholder="Description" style="width: 100%; padding: 12px 16px; border-radius: 8px; background: rgba(255,255,255,0.8); border: 1px solid var(--card-border); color: var(--text-main); font-family: 'Inter';">${description}</textarea></div>
-            <div class="form-group toggle-row" style="margin-bottom: 10px;">
-                <label>Actieknop tonen? <span class="btn-status-text" style="color: var(--text-muted); font-weight: normal; margin-left: 10px;">${hasButton ? '' : '(Button off)'}</span></label>
-                <label class="toggle-switch">
-                    <input type="checkbox" class="news-btn-toggle" ${hasButton ? 'checked' : ''}>
-                    <span class="toggle-slider"></span>
-                </label>
-            </div>
-            <div class="btn-inputs-container" style="display: ${hasButton ? 'flex' : 'none'}; gap: 10px; margin-bottom: 10px;">
-                <input type="text" class="news-btn-text" placeholder="Button Text" value="${buttonText}" style="flex: 1;">
-                <input type="text" class="news-btn-link" placeholder="Button Link" value="${buttonLink}" style="flex: 1;">
-                <select class="news-btn-class" style="flex: 1;">
-                    <option value="btn-primary" ${buttonClass === 'btn-primary' ? 'selected' : ''}>Primary (White)</option>
-                    <option value="btn-secondary" ${buttonClass === 'btn-secondary' ? 'selected' : ''}>Secondary (Outline)</option>
-                </select>
-            </div>
-            ${isNew ? '<button type="button" class="btn btn-primary confirm-add-btn" style="width: 100%; margin-top: 10px;">ADD UPDATE</button>' : ''}
-        `;
-
-        const btnToggle = div.querySelector('.news-btn-toggle');
-        const btnContainer = div.querySelector('.btn-inputs-container');
-        const btnStatus = div.querySelector('.btn-status-text');
-
-        btnToggle.addEventListener('change', () => {
-            if (btnToggle.checked) {
-                btnContainer.style.display = 'flex';
-                btnStatus.textContent = '';
-            } else {
-                btnContainer.style.display = 'none';
-                btnStatus.textContent = '(Button off)';
-            }
-            if (!isNew) scheduleAutoSave();
-        });
-
-        if (isNew) {
-            // Logic for a new, unsaved news form
-            div.querySelector('.cancel-news-btn').addEventListener('click', () => {
-                div.remove();
-            });
-
-            div.querySelector('.confirm-add-btn').addEventListener('click', () => {
-                const newDate = div.querySelector('.news-date').value;
-                const newTitle = div.querySelector('.news-title').value;
-                const newDesc = div.querySelector('.news-description').value;
-                const newHasBtn = div.querySelector('.news-btn-toggle').checked;
-                const newBtnTxt = div.querySelector('.news-btn-text').value;
-                const newBtnLnk = div.querySelector('.news-btn-link').value;
-                const newBtnCls = div.querySelector('.news-btn-class').value;
-                
-                // Replace this form with a saved block
-                div.remove();
-                createNewsInput(newDate, newTitle, newDesc, newHasBtn, newBtnTxt, newBtnLnk, newBtnCls, false);
-                scheduleAutoSave();
-            });
-        } else {
-            // Auto-save on any news field change for saved newss
-            div.querySelector('.news-date').addEventListener('input', scheduleAutoSave);
-            div.querySelector('.news-title').addEventListener('input', scheduleAutoSave);
-            div.querySelector('.news-description').addEventListener('input', scheduleAutoSave);
-            div.querySelector('.news-btn-text').addEventListener('input', scheduleAutoSave);
-            div.querySelector('.news-btn-link').addEventListener('input', scheduleAutoSave);
-            div.querySelector('.news-btn-class').addEventListener('change', scheduleAutoSave);
-
-            div.querySelector('.remove-news-btn').addEventListener('click', () => {
-                div.remove();
-                scheduleAutoSave();
-            });
-
-            const dragHandle = div.querySelector('.drag-handle');
-            if (dragHandle) {
-                dragHandle.addEventListener('mouseenter', () => div.draggable = true);
-                dragHandle.addEventListener('mouseleave', () => div.draggable = false);
-            }
-
-            // Drag and Drop Logic
-            div.addEventListener('dragstart', function(e) {
-                draggedNews = this;
-                setTimeout(() => this.style.opacity = '0.5', 0);
-                e.dataTransfer.effectAllowed = 'move';
-            });
-
-            div.addEventListener('dragend', function() {
-                draggedNews = null;
-                this.style.opacity = '1';
-            });
-
-            div.addEventListener('dragover', function(e) {
-                e.preventDefault();
-                this.style.border = '1px dashed var(--accent-gold)';
-            });
-
-            div.addEventListener('dragleave', function() {
-                this.style.border = '1px solid var(--card-border)';
-            });
-
-            div.addEventListener('drop', function(e) {
-                e.preventDefault();
-                this.style.border = '1px solid var(--card-border)';
-                if (draggedNews !== this) {
-                    const allNewss = [...newssListContainer.querySelectorAll('.news-input-row:not(.new-news-form)')];
-                    const draggedIndex = allNewss.indexOf(draggedNews);
-                    const targetIndex = allNewss.indexOf(this);
-                    if (draggedIndex < targetIndex) {
-                        this.after(draggedNews);
-                    } else {
-                        this.before(draggedNews);
-                    }
-                    scheduleAutoSave();
-                }
-            });
-        }
-
-        newssListContainer.appendChild(div);
-    }
-
-function createTournamentInput(date = '', title = '', description = '', hasButton = true, buttonText = '', buttonLink = 'index.html', buttonClass = 'btn-primary', isNew = false) {
-        const div = document.createElement('div');
-        div.className = 'tournament-input-row' + (isNew ? ' new-tournament-form' : '');
-        div.draggable = false;
-        div.style.border = isNew ? '2px dashed var(--accent-gold)' : '1px solid var(--card-border)';
-        div.style.padding = '15px';
-        div.style.marginBottom = '15px';
-        div.style.borderRadius = '8px';
-        div.style.cursor = isNew ? 'default' : 'grab';
-        div.style.backgroundColor = 'var(--card-bg)';
-        div.style.transition = 'opacity 0.2s';
-        
-        div.innerHTML = `
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
-                <div class="drag-handle" style="color: var(--text-muted); padding: 5px; cursor: ${isNew ? 'default' : 'grab'};">
-                    ${isNew ? '<i class="fa-solid fa-plus"></i> Nieuwe Tournament Maken' : '<i class="fa-solid fa-grip-vertical"></i> Sleep om te verplaatsen'}
-                </div>
-                ${isNew ? '<button type="button" class="btn btn-secondary cancel-tournament-btn" style="padding: 5px 10px; font-size: 0.8rem;"><i class="fa-solid fa-xmark"></i> Annuleren</button>' : '<button type="button" class="btn btn-secondary remove-tournament-btn" style="padding: 5px 10px; font-size: 0.8rem;"><i class="fa-solid fa-trash"></i> Verwijder Tournament</button>'}
-            </div>
-            <div class="form-group"><input type="text" class="tournament-date" placeholder="Date (e.g. MAY 2 2026)" value="${date}"></div>
-            <div class="form-group"><input type="text" class="tournament-title" placeholder="Title" value="${title}"></div>
-            <div class="form-group"><textarea class="tournament-description" placeholder="Description" style="width: 100%; padding: 12px 16px; border-radius: 8px; background: rgba(255,255,255,0.8); border: 1px solid var(--card-border); color: var(--text-main); font-family: 'Inter';">${description}</textarea></div>
-            <div class="form-group toggle-row" style="margin-bottom: 10px;">
-                <label>Actieknop tonen? <span class="btn-status-text" style="color: var(--text-muted); font-weight: normal; margin-left: 10px;">${hasButton ? '' : '(Button off)'}</span></label>
-                <label class="toggle-switch">
-                    <input type="checkbox" class="tournament-btn-toggle" ${hasButton ? 'checked' : ''}>
-                    <span class="toggle-slider"></span>
-                </label>
-            </div>
-            <div class="btn-inputs-container" style="display: ${hasButton ? 'flex' : 'none'}; gap: 10px; margin-bottom: 10px;">
-                <input type="text" class="tournament-btn-text" placeholder="Button Text" value="${buttonText}" style="flex: 1;">
-                <input type="text" class="tournament-btn-link" placeholder="Button Link" value="${buttonLink}" style="flex: 1;">
-                <select class="tournament-btn-class" style="flex: 1;">
-                    <option value="btn-primary" ${buttonClass === 'btn-primary' ? 'selected' : ''}>Primary (White)</option>
-                    <option value="btn-secondary" ${buttonClass === 'btn-secondary' ? 'selected' : ''}>Secondary (Outline)</option>
-                </select>
-            </div>
-            ${isNew ? '<button type="button" class="btn btn-primary confirm-add-btn" style="width: 100%; margin-top: 10px;">ADD UPDATE</button>' : ''}
-        `;
-
-        const btnToggle = div.querySelector('.tournament-btn-toggle');
-        const btnContainer = div.querySelector('.btn-inputs-container');
-        const btnStatus = div.querySelector('.btn-status-text');
-
-        btnToggle.addEventListener('change', () => {
-            if (btnToggle.checked) {
-                btnContainer.style.display = 'flex';
-                btnStatus.textContent = '';
-            } else {
-                btnContainer.style.display = 'none';
-                btnStatus.textContent = '(Button off)';
-            }
-            if (!isNew) scheduleAutoSave();
-        });
-
-        if (isNew) {
-            // Logic for a new, unsaved tournament form
-            div.querySelector('.cancel-tournament-btn').addEventListener('click', () => {
-                div.remove();
-            });
-
-            div.querySelector('.confirm-add-btn').addEventListener('click', () => {
-                const newDate = div.querySelector('.tournament-date').value;
-                const newTitle = div.querySelector('.tournament-title').value;
-                const newDesc = div.querySelector('.tournament-description').value;
-                const newHasBtn = div.querySelector('.tournament-btn-toggle').checked;
-                const newBtnTxt = div.querySelector('.tournament-btn-text').value;
-                const newBtnLnk = div.querySelector('.tournament-btn-link').value;
-                const newBtnCls = div.querySelector('.tournament-btn-class').value;
-                
-                // Replace this form with a saved block
-                div.remove();
-                createTournamentInput(newDate, newTitle, newDesc, newHasBtn, newBtnTxt, newBtnLnk, newBtnCls, false);
-                scheduleAutoSave();
-            });
-        } else {
-            // Auto-save on any tournament field change for saved tournaments
-            div.querySelector('.tournament-date').addEventListener('input', scheduleAutoSave);
-            div.querySelector('.tournament-title').addEventListener('input', scheduleAutoSave);
-            div.querySelector('.tournament-description').addEventListener('input', scheduleAutoSave);
-            div.querySelector('.tournament-btn-text').addEventListener('input', scheduleAutoSave);
-            div.querySelector('.tournament-btn-link').addEventListener('input', scheduleAutoSave);
-            div.querySelector('.tournament-btn-class').addEventListener('change', scheduleAutoSave);
-
-            div.querySelector('.remove-tournament-btn').addEventListener('click', () => {
-                div.remove();
-                scheduleAutoSave();
-            });
-
-            const dragHandle = div.querySelector('.drag-handle');
-            if (dragHandle) {
-                dragHandle.addEventListener('mouseenter', () => div.draggable = true);
-                dragHandle.addEventListener('mouseleave', () => div.draggable = false);
-            }
-
-            // Drag and Drop Logic
-            div.addEventListener('dragstart', function(e) {
-                draggedTournament = this;
-                setTimeout(() => this.style.opacity = '0.5', 0);
-                e.dataTransfer.effectAllowed = 'move';
-            });
-
-            div.addEventListener('dragend', function() {
-                draggedTournament = null;
-                this.style.opacity = '1';
-            });
-
-            div.addEventListener('dragover', function(e) {
-                e.preventDefault();
-                this.style.border = '1px dashed var(--accent-gold)';
-            });
-
-            div.addEventListener('dragleave', function() {
-                this.style.border = '1px solid var(--card-border)';
-            });
-
-            div.addEventListener('drop', function(e) {
-                e.preventDefault();
-                this.style.border = '1px solid var(--card-border)';
-                if (draggedTournament !== this) {
-                    const allTournaments = [...tournamentsListContainer.querySelectorAll('.tournament-input-row:not(.new-tournament-form)')];
-                    const draggedIndex = allTournaments.indexOf(draggedTournament);
-                    const targetIndex = allTournaments.indexOf(this);
-                    if (draggedIndex < targetIndex) {
-                        this.after(draggedTournament);
-                    } else {
-                        this.before(draggedTournament);
-                    }
-                    scheduleAutoSave();
-                }
-            });
-        }
-
-        tournamentsListContainer.appendChild(div);
-    }
-
-    addNewsBtn.addEventListener('click', () => {
-        createNewsInput('', '', '', true, '', '', 'btn-primary', true);
-    });
-
-    addTournamentBtn.addEventListener('click', () => {
-        createTournamentInput('', '', '', true, '', '', 'btn-primary', true);
-    });
-    
 
     addUpdateBtn.addEventListener('click', () => {
         createUpdateInput('', '', '', true, '', 'index.html', 'btn-primary', true);
@@ -1071,9 +764,7 @@ function createTournamentInput(date = '', title = '', description = '', hasButto
                 buttonLink: 'index.html',
                 buttonClass: 'btn-primary'
             }
-        ],
-        news: [],
-        tournaments: []
+        ]
     };
 
     async function loadConfiguration() {
@@ -1133,20 +824,6 @@ function createTournamentInput(date = '', title = '', description = '', hasButto
                 const hasBtn = upd.hasButton !== undefined ? upd.hasButton : (upd.buttonText ? true : false);
                 createUpdateInput(upd.date, upd.title, upd.description, hasBtn, upd.buttonText, upd.buttonLink, upd.buttonClass);
             });
-            newsListContainer.innerHTML = '';
-            const newsList = (data.news && Array.isArray(data.news)) ? data.news : defaultConfig.news;
-            newsList.forEach(item => {
-                const hasBtn = item.hasButton !== undefined ? item.hasButton : (item.buttonText ? true : false);
-                createNewsInput(item.date, item.title, item.description, hasBtn, item.buttonText, item.buttonLink, item.buttonClass);
-            });
-
-            tournamentsListContainer.innerHTML = '';
-            const tournamentsList = (data.tournaments && Array.isArray(data.tournaments)) ? data.tournaments : defaultConfig.tournaments;
-            tournamentsList.forEach(item => {
-                const hasBtn = item.hasButton !== undefined ? item.hasButton : (item.buttonText ? true : false);
-                createTournamentInput(item.date, item.title, item.description, hasBtn, item.buttonText, item.buttonLink, item.buttonClass);
-            });
-
 
             socialMediaListContainer.innerHTML = '';
             const socialList = (data.socialMedia && Array.isArray(data.socialMedia)) ? data.socialMedia : (defaultConfig.socialMedia || []);
