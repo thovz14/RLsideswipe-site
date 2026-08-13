@@ -692,13 +692,14 @@ select:focus {
         border-radius: 20px;
         top: 10px;
         transition: all 0.3s ease;
+        min-height: 60px;
     }
     
     .mobile-menu-toggle {
         display: block;
         align-self: flex-end;
         position: absolute;
-        top: 8px;
+        top: 11px;
         right: 20px;
     }
     
