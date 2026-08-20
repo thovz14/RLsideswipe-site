@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rocket League Sideswipe - Tournament Leaderboard</title>
+    <meta name="description" content="Tournament performance leaderboard for RLSideswipe players.">
+    <link rel="stylesheet" href="style.css?v=7">
+    <link rel="stylesheet" href="leaderboard.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <nav class="top-nav">
+        <button class="mobile-menu-toggle" aria-label="Toggle menu">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="updates.html" class="nav-link">Updates</a>
+        <a href="news.html" class="nav-link">News</a>
+        <a href="tournaments.html" class="nav-link">Tournaments</a>
+        <a href="leaderboard.html" class="nav-link active">Leaderboard</a>
+        <a href="social-media.html" class="nav-link">Socials</a>
+        <a href="admin.html" class="nav-link">Admin</a>
+    </nav>
+
+    <main class="container" style="max-width: 900px;">
+
+        <section class="updates" style="width: 100%;">
+            <div class="updates-header">
+                <span class="pill" style="border-color: var(--accent-gold); color: var(--accent-gold); box-shadow: 0 0 10px rgba(243,156,18,0.2);">
+                    🏆 TOURNAMENT LEADERBOARD
+                </span>
+            </div>
+
+            <!-- Podium -->
+            <div class="podium-container" id="podium-container">
+                <div class="podium-loading">
+                    <i class="fa-solid fa-spinner fa-spin" style="font-size:2rem; color:var(--accent-gold);"></i>
+                    <p style="margin-top:1rem;">Loading leaderboard…</p>
+                </div>
+            </div>
+
+            <!-- Points legend -->
+            <div class="points-legend">
+                <span class="legend-title"><i class="fa-solid fa-star" style="margin-right:5px;color:var(--accent-gold);"></i>Points System</span>
+                <div class="legend-items">
+                    <span>🥇 1st = 100 pts</span>
+                    <span>🥈 2nd = 75 pts</span>
+                    <span>🥉 3rd = 50 pts</span>
+                    <span>4th = 25 pts</span>
+                    <span>5th = 15 pts</span>
+                    <span>6th = 10 pts</span>
+                    <span>7th–8th = 5 pts</span>
+                    <span>Other = 2 pts</span>
+                </div>
+            </div>
+
+            <!-- Full player table -->
+            <div class="lb-table-wrap" id="lb-table-wrap">
+                <!-- filled by JS -->
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        Ontworpen door <a href="https://accounts.wonderdev.nl" target="_blank">wonderlight studios</a>
+    </footer>
+
+    <script type="module" src="leaderboard.js"></script>
+    <script src="mobile-nav.js"></script>
+</body>
+</html>
