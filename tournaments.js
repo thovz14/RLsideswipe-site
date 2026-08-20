@@ -147,10 +147,12 @@ document.addEventListener('DOMContentLoaded', () => {
             return true;
         }
         if (step === 3) {
-            const mode    = document.querySelector('input[name="t-mode"]:checked');
-            const rules   = document.querySelector('input[name="t-rules"]:checked');
-            if (!mode)    return showError('Please select a game mode.');
-            if (!rules)   return showError('Please answer the rules agreement question.');
+            const mode         = document.querySelector('input[name="t-mode"]:checked');
+            const availability = document.querySelector('input[name="t-availability"]:checked');
+            const rules        = document.querySelector('input[name="t-rules"]:checked');
+            if (!mode)         return showError('Please select a game mode.');
+            if (!availability) return showError('Please answer the availability question.');
+            if (!rules)        return showError('Please answer the rules agreement question.');
             if (rules.value === 'no') return showError('You must agree to the tournament rules to register.');
             return true;
         }
@@ -183,9 +185,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const username  = document.getElementById('t-username').value.trim();
         const region    = document.querySelector('input[name="t-region"]:checked').value;
         const rank      = document.getElementById('t-rank').value;
-        const mode      = document.querySelector('input[name="t-mode"]:checked').value;
-        const teammate  = document.getElementById('t-teammate').value.trim() || 'N/A';
-        const timestamp = new Date().toISOString();
+        const mode         = document.querySelector('input[name="t-mode"]:checked').value;
+        const availability = document.querySelector('input[name="t-availability"]:checked').value;
+        const teammate     = document.getElementById('t-teammate').value.trim() || 'N/A';
+        const timestamp    = new Date().toISOString();
 
         const payload = {
             username: 'Tournament Registration',
@@ -198,9 +201,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     { name: '🎮 RL Sideswipe Username', value: username, inline: true  },
                     { name: '🌍 Region',                value: region,   inline: true  },
                     { name: '🏅 Rank',                      value: rank,      inline: true  },
-                    { name: '🎮 Game Mode',                 value: mode,      inline: true  },
-                    { name: '👥 Teammate',                  value: teammate,  inline: false },
-                    { name: '✅ Rules Agreement',           value: 'Agreed',  inline: false },
+                    { name: '🎮 Game Mode',         value: mode,         inline: true  },
+                    { name: '📅 Full Availability',  value: availability, inline: true  },
+                    { name: '👥 Teammate',           value: teammate,     inline: false },
+                    { name: '✅ Rules Agreement',    value: 'Agreed',     inline: false },
                 ],
                 footer: { text: 'RLSideswipe Website — Tournament Registration' },
                 timestamp,
