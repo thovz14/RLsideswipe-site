@@ -1,65 +1,22 @@
 // ─── Discord Webhook ──────────────────────────────────────────────────────────
 const WEBHOOK_URL = 'https://discord.com/api/webhooks/1540107203615260733/y28DbDlKsJiHDZmWzbddh7MN4qTWBYncHOWNCcSdRtMJCik2sxTbihuQ6cP6DNrQVgi1';
 
-// ─── Tournament Feed ──────────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', async () => {
+// ─── Tournament Feed (static fallback — Reddit API no longer allows unauthenticated access) ─────
+document.addEventListener('DOMContentLoaded', () => {
     const tournamentsContainer = document.getElementById('tournaments-container');
-
-    try {
-        const redditUrl = 'https://www.reddit.com/r/RLSideswipe/search.json?q=tournament+OR+esports&restrict_sr=1&sort=new&limit=15';
-        const response = await fetch(redditUrl, { headers: { 'Accept': 'application/json' } });
-
-        if (!response.ok) throw new Error(`Reddit API returned ${response.status}`);
-
-        const data = await response.json();
-        tournamentsContainer.innerHTML = '';
-
-        const posts = data?.data?.children;
-        if (!posts || posts.length === 0) {
-            tournamentsContainer.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 2rem;">No recent tournaments found.</p>';
-            return;
-        }
-
-        posts.forEach(({ data: item }) => {
-            const card = document.createElement('div');
-            card.className = 'update-card';
-
-            const dateObj = new Date(item.created_utc * 1000);
-            const date = dateObj.toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' });
-
-            let thumbnail = '';
-            if (item.thumbnail && item.thumbnail.startsWith('http') &&
-                !item.thumbnail.includes('default') && !item.thumbnail.includes('self')) {
-                thumbnail = `<img src="${item.thumbnail}" style="max-width: 100%; border-radius: 8px; margin-top: 15px; border: 1px solid var(--card-border);">`;
-            }
-
-            const txt = document.createElement('textarea');
-            txt.innerHTML = item.title;
-            const decodedTitle = txt.value;
-
-            card.innerHTML = `
-                <div class="update-meta">
-                    <span class="update-date"><i class="fa-solid fa-trophy" style="margin-right: 5px;"></i>${date} - Community Tournament</span>
-                </div>
-                <div class="update-content">
-                    <h2 style="font-size: 1.25rem;">${decodedTitle}</h2>
-                    ${thumbnail}
-                    <div style="margin-top: 15px;">
-                        <a href="https://www.reddit.com${item.permalink}" target="_blank" class="btn btn-primary btn-sm" style="font-size: 0.8rem; padding: 6px 12px;">View Tournament</a>
-                    </div>
-                </div>
-            `;
-            tournamentsContainer.appendChild(card);
-        });
-
-    } catch (err) {
-        console.error('Error fetching tournaments:', err);
-        tournamentsContainer.innerHTML = `
-            <div class="update-card" style="text-align: center;">
-                <p>Failed to load tournaments at this time. Please try again later.</p>
-            </div>
-        `;
-    }
+    tournamentsContainer.innerHTML = `
+        <div class="update-card" style="text-align: center; padding: 3rem 2rem;">
+            <i class="fa-solid fa-trophy" style="font-size: 2.5rem; color: var(--accent-gold); margin-bottom: 1rem; display: block;"></i>
+            <h2 style="font-size: 1.3rem; margin-bottom: 0.75rem;">No tournaments scheduled right now</h2>
+            <p style="color: var(--text-muted); margin-bottom: 1.5rem; line-height: 1.6;">
+                Custom tournaments are announced in our Discord server.<br>
+                Join to stay up to date and register below when one goes live!
+            </p>
+            <a href="social-media.html" class="btn btn-primary" style="font-size: 0.9rem;">
+                <i class="fa-brands fa-discord" style="margin-right: 8px;"></i>Join our Discord
+            </a>
+        </div>
+    `;
 });
 
 // ─── Modal & Form Logic ───────────────────────────────────────────────────────
