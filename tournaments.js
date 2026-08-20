@@ -135,10 +135,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (step === 1) {
             const discord   = document.getElementById('t-discord').value.trim();
             const username  = document.getElementById('t-username').value.trim();
-            const playerid  = document.getElementById('t-playerid').value.trim();
             if (!discord)   return showError('Please enter your Discord username.');
             if (!username)  return showError('Please enter your Rocket League Sideswipe username.');
-            if (!playerid)  return showError('Please enter your Sideswipe Player ID.');
             return true;
         }
         if (step === 2) {
@@ -183,7 +181,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const discord   = document.getElementById('t-discord').value.trim();
         const username  = document.getElementById('t-username').value.trim();
-        const playerid  = document.getElementById('t-playerid').value.trim();
         const region    = document.querySelector('input[name="t-region"]:checked').value;
         const rank      = document.getElementById('t-rank').value;
         const mode      = document.querySelector('input[name="t-mode"]:checked').value;
@@ -197,10 +194,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 title: '🏆 New Custom Tournament Entry',
                 color: 0xE67E22,
                 fields: [
-                    { name: '👤 Discord Username',          value: discord,   inline: true  },
-                    { name: '🎮 RL Sideswipe Username',     value: username,  inline: true  },
-                    { name: '🪪 Sideswipe Player ID',       value: playerid,  inline: false },
-                    { name: '🌍 Region',                    value: region,    inline: true  },
+                    { name: '👤 Discord Username',      value: discord,  inline: true  },
+                    { name: '🎮 RL Sideswipe Username', value: username, inline: true  },
+                    { name: '🌍 Region',                value: region,   inline: true  },
                     { name: '🏅 Rank',                      value: rank,      inline: true  },
                     { name: '🎮 Game Mode',                 value: mode,      inline: true  },
                     { name: '👥 Teammate',                  value: teammate,  inline: false },
