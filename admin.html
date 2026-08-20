@@ -6,6 +6,7 @@
     <title>Rocket League Sideswipe - Admin</title>
     <meta name="description" content="Rocket League Sideswipe Admin Panel">
     <link rel="stylesheet" href="style.css?v=4">
+    <link rel="stylesheet" href="leaderboard.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://www.youtube-nocookie.com">
@@ -22,6 +23,7 @@
         <a href="updates.html" class="nav-link">Updates</a>
         <a href="news.html" class="nav-link">News</a>
         <a href="tournaments.html" class="nav-link">Tournaments</a>
+        <a href="leaderboard.html" class="nav-link">Leaderboard</a>
         <a href="social-media.html" class="nav-link">Socials</a>
         <a href="admin.html" class="nav-link active">Admin</a>
     </nav>
@@ -48,6 +50,13 @@
         <section id="dashboard-section" class="admin-panel" style="display: none; position: relative;">
             <button id="logout-btn" class="btn btn-secondary btn-sm" style="position: absolute; top: 1.5rem; right: 1.5rem;">Logout</button>
             <h2 style="margin-bottom: 2rem;">Website Configuration</h2>
+
+            <!-- Leaderboard Manager Button -->
+            <div style="margin-bottom: 2rem;">
+                <button id="open-lb-admin" class="btn" style="background: linear-gradient(135deg,var(--accent-gold),#f39c12); color:#fff; border:none; cursor:pointer; font-weight:700; padding:12px 24px; border-radius:10px; font-size:0.95rem; box-shadow: 0 4px 16px rgba(230,126,34,0.35); transition: all 0.3s ease;">
+                    <i class="fa-solid fa-trophy" style="margin-right:8px;"></i>Manage Leaderboard
+                </button>
+            </div>
             
             <div id="config-form">
                 <div class="form-section">
@@ -114,7 +123,36 @@
         Ontworpen door <a href="https://accounts.wonderdev.nl" target="_blank">wonderlight studios</a>
     </footer>
 
-    <script type="module" src="admin.js?v=6"></script>
+    <script type="module" src="admin.js?v=7"></script>
     <script src="mobile-nav.js"></script>
+
+    <!-- Leaderboard Admin Overlay -->
+    <div id="lb-admin-overlay" class="lb-admin-overlay">
+        <div class="lb-admin-panel">
+            <div class="lb-admin-header">
+                <h2><i class="fa-solid fa-trophy" style="margin-right:10px;color:var(--accent-gold);"></i>Tournament Leaderboard Manager</h2>
+                <button id="close-lb-admin" class="modal-close" aria-label="Close">&times;</button>
+            </div>
+
+            <div class="lb-col-headers">
+                <span>Discord Username</span>
+                <span>Matches</span>
+                <span>Wins</span>
+                <span>Losses</span>
+                <span>Goals For</span>
+                <span>Goals Against</span>
+                <span>Placements (csv)</span>
+                <span></span>
+            </div>
+
+            <div id="lb-players-list"></div>
+
+            <div style="display:flex; gap:1rem; margin-top:1.5rem; align-items:center; flex-wrap:wrap;">
+                <button id="lb-add-player" class="btn btn-secondary"><i class="fa-solid fa-plus" style="margin-right:6px;"></i>Add Player</button>
+                <button id="lb-save" class="btn" style="background:linear-gradient(135deg,var(--accent-gold),#f39c12);color:#fff;border:none;cursor:pointer;font-weight:700;padding:10px 24px;border-radius:8px;"><i class="fa-solid fa-floppy-disk" style="margin-right:6px;"></i>Save Leaderboard</button>
+                <span id="lb-save-status" style="font-size:0.85rem;color:var(--accent-green);"></span>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

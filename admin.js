@@ -840,3 +840,107 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 });
+
+// ─── Leaderboard Admin Panel ──────────────────────────────────────────────────
+
+document.addEventListener('DOMContentLoaded', () => {
+    const overlay    = document.getElementById('lb-admin-overlay');
+    const openBtn    = document.getElementById('open-lb-admin');
+    const closeBtn   = document.getElementById('close-lb-admin');
+    const playerList = document.getElementById('lb-players-list');
+    const addBtn     = document.getElementById('lb-add-player');
+    const saveBtn    = document.getElementById('lb-save');
+    const saveStatus = document.getElementById('lb-save-status');
+
+    if (!overlay) return; // not on admin page
+
+    // Open / close
+    openBtn.addEventListener('click', async () => {
+        overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        await loadLbPlayers();
+    });
+
+    function closeOverlay() {
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    closeBtn.addEventListener('click', closeOverlay);
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) closeOverlay(); });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && overlay.classList.contains('active')) closeOverlay();
+    });
+
+    // Load existing players from Firebase
+    async function loadLbPlayers() {
+        playerList.innerHTML = '<p style="text-align:center;color:var(--text-muted);padding:1rem;">Loading…</p>';
+        try {
+            const snap = await getDoc(doc(db, 'config', 'website'));
+            const data = snap.exists() ? snap.data() : {};
+            const players = data.leaderboardPlayers || [];
+            playerList.innerHTML = '';
+            players.forEach(p => addPlayerRow(p));
+        } catch (e) {
+            playerList.innerHTML = '<p style="color:#e74c3c;padding:1rem;">Failed to load.</p>';
+        }
+    }
+
+    // Add a player row (optionally pre-filled)
+    function addPlayerRow(data = {}) {
+        const row = document.createElement('div');
+        row.className = 'lb-player-row';
+        row.innerHTML = `
+            <input class="lbp-username"   type="text"   placeholder="Discord username" value="${data.discordUsername || ''}">
+            <input class="lbp-matches"    type="number" placeholder="0" min="0" value="${data.matchesPlayed ?? ''}">
+            <input class="lbp-wins"       type="number" placeholder="0" min="0" value="${data.wins ?? ''}">
+            <input class="lbp-losses"     type="number" placeholder="0" min="0" value="${data.losses ?? ''}">
+            <input class="lbp-gf"         type="number" placeholder="0" min="0" value="${data.goalsScored ?? ''}">
+            <input class="lbp-ga"         type="number" placeholder="0" min="0" value="${data.goalsConceded ?? ''}">
+            <input class="lbp-placements" type="text"   placeholder="1,2,3" value="${(data.placements || []).join(',')}">
+            <button class="btn btn-secondary lb-remove-btn" title="Remove player" style="padding:6px 10px;flex-shrink:0;">
+                <i class="fa-solid fa-trash"></i>
+            </button>
+        `;
+        row.querySelector('.lb-remove-btn').addEventListener('click', () => row.remove());
+        playerList.appendChild(row);
+    }
+
+    addBtn.addEventListener('click', () => addPlayerRow());
+
+    // Save to Firebase
+    saveBtn.addEventListener('click', async () => {
+        saveBtn.disabled = true;
+        saveStatus.textContent = 'Saving…';
+        saveStatus.style.color = 'var(--text-muted)';
+
+        const rows = playerList.querySelectorAll('.lb-player-row');
+        const players = Array.from(rows).map(row => {
+            const raw = row.querySelector('.lbp-placements').value;
+            const placements = raw.split(',').map(s => parseInt(s.trim())).filter(n => !isNaN(n));
+            return {
+                discordUsername: row.querySelector('.lbp-username').value.trim(),
+                matchesPlayed:   parseInt(row.querySelector('.lbp-matches').value)   || 0,
+                wins:            parseInt(row.querySelector('.lbp-wins').value)      || 0,
+                losses:          parseInt(row.querySelector('.lbp-losses').value)    || 0,
+                goalsScored:     parseInt(row.querySelector('.lbp-gf').value)        || 0,
+                goalsConceded:   parseInt(row.querySelector('.lbp-ga').value)        || 0,
+                placements,
+            };
+        }).filter(p => p.discordUsername);
+
+        try {
+            await setDoc(doc(db, 'config', 'website'), { leaderboardPlayers: players }, { merge: true });
+            saveStatus.textContent = 'Saved ✓';
+            saveStatus.style.color = 'var(--accent-green)';
+            setTimeout(() => saveStatus.textContent = '', 3000);
+        } catch (e) {
+            saveStatus.textContent = 'Error saving.';
+            saveStatus.style.color = '#e74c3c';
+            console.error(e);
+        } finally {
+            saveBtn.disabled = false;
+        }
+    });
+});
+
