@@ -1,22 +1,66 @@
 // ─── Discord Webhook ──────────────────────────────────────────────────────────
 const WEBHOOK_URL = 'https://discord.com/api/webhooks/1540107203615260733/y28DbDlKsJiHDZmWzbddh7MN4qTWBYncHOWNCcSdRtMJCik2sxTbihuQ6cP6DNrQVgi1';
 
-// ─── Tournament Feed (static fallback — Reddit API no longer allows unauthenticated access) ─────
-document.addEventListener('DOMContentLoaded', () => {
+// ─── Tournament Feed ──────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', async () => {
     const tournamentsContainer = document.getElementById('tournaments-container');
-    tournamentsContainer.innerHTML = `
-        <div class="update-card" style="text-align: center; padding: 3rem 2rem;">
-            <i class="fa-solid fa-trophy" style="font-size: 2.5rem; color: var(--accent-gold); margin-bottom: 1rem; display: block;"></i>
-            <h2 style="font-size: 1.3rem; margin-bottom: 0.75rem;">No tournaments scheduled right now</h2>
-            <p style="color: var(--text-muted); margin-bottom: 1.5rem; line-height: 1.6;">
-                Custom tournaments are announced in our Discord server.<br>
-                Join to stay up to date and register below when one goes live!
-            </p>
-            <a href="social-media.html" class="btn btn-primary" style="font-size: 0.9rem;">
-                <i class="fa-brands fa-discord" style="margin-right: 8px;"></i>Join our Discord
-            </a>
-        </div>
-    `;
+
+    try {
+        const feedUrl = 'https://www.reddit.com/r/RLSideswipe/search.rss?q=tournament+OR+esports&restrict_sr=1&sort=new&t=' + Math.floor(Date.now() / 3600000);
+        const response = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feedUrl)}`);
+        const data = await response.json();
+
+        tournamentsContainer.innerHTML = '';
+
+        if (data && data.status === 'ok' && data.items) {
+            const posts = data.items;
+
+            if (posts.length === 0) {
+                tournamentsContainer.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 2rem;">No recent tournaments found.</p>';
+                return;
+            }
+
+            posts.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'update-card';
+
+                const dateObj = new Date(item.pubDate);
+                const date = dateObj.toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' });
+
+                let thumbnail = '';
+                if (item.thumbnail && !item.thumbnail.includes('default') && !item.thumbnail.includes('self')) {
+                    thumbnail = `<img src="${item.thumbnail}" style="max-width: 100%; border-radius: 8px; margin-top: 15px; border: 1px solid var(--card-border);">`;
+                }
+
+                const txt = document.createElement('textarea');
+                txt.innerHTML = item.title;
+                const decodedTitle = txt.value;
+
+                card.innerHTML = `
+                    <div class="update-meta">
+                        <span class="update-date"><i class="fa-solid fa-trophy" style="margin-right: 5px;"></i>${date} - Community Tournament</span>
+                    </div>
+                    <div class="update-content">
+                        <h2 style="font-size: 1.25rem;">${decodedTitle}</h2>
+                        ${thumbnail}
+                        <div style="margin-top: 15px;">
+                            <a href="${item.link}" target="_blank" class="btn btn-primary btn-sm" style="font-size: 0.8rem; padding: 6px 12px;">View Tournament</a>
+                        </div>
+                    </div>
+                `;
+                tournamentsContainer.appendChild(card);
+            });
+        } else {
+            throw new Error(data.message || 'Invalid response format');
+        }
+    } catch (err) {
+        console.error('Error fetching tournaments:', err);
+        tournamentsContainer.innerHTML = `
+            <div class="update-card" style="text-align: center;">
+                <p>Failed to load tournaments at this time. Please try again later.</p>
+            </div>
+        `;
+    }
 });
 
 // ─── Modal & Form Logic ───────────────────────────────────────────────────────
@@ -106,10 +150,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         if (step === 3) {
             const mode    = document.querySelector('input[name="t-mode"]:checked');
-            const contact = document.getElementById('t-contact').value.trim();
             const rules   = document.querySelector('input[name="t-rules"]:checked');
             if (!mode)    return showError('Please select a game mode.');
-            if (!contact) return showError('Please enter a contact method.');
             if (!rules)   return showError('Please answer the rules agreement question.');
             if (rules.value === 'no') return showError('You must agree to the tournament rules to register.');
             return true;
@@ -146,7 +188,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const rank      = document.getElementById('t-rank').value;
         const mode      = document.querySelector('input[name="t-mode"]:checked').value;
         const teammate  = document.getElementById('t-teammate').value.trim() || 'N/A';
-        const contact   = document.getElementById('t-contact').value.trim();
         const timestamp = new Date().toISOString();
 
         const payload = {
@@ -163,7 +204,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     { name: '🏅 Rank',                      value: rank,      inline: true  },
                     { name: '🎮 Game Mode',                 value: mode,      inline: true  },
                     { name: '👥 Teammate',                  value: teammate,  inline: false },
-                    { name: '📩 Contact',                   value: contact,   inline: false },
                     { name: '✅ Rules Agreement',           value: 'Agreed',  inline: false },
                 ],
                 footer: { text: 'RLSideswipe Website — Tournament Registration' },

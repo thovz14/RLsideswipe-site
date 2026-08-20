@@ -600,6 +600,28 @@ body {
     cursor: not-allowed;
 }
 
+/* Contact mail button */
+.btn-contact-mail {
+    display: inline-flex;
+    align-items: center;
+    margin-top: 0.5rem;
+    padding: 10px 20px;
+    border-radius: 8px;
+    background: rgba(41, 128, 185, 0.1);
+    border: 1px solid var(--accent-blue);
+    color: var(--accent-blue);
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.btn-contact-mail:hover {
+    background: rgba(41, 128, 185, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px rgba(41, 128, 185, 0.25);
+}
+
 /* Modal Overlay */
 .modal-overlay {
     position: fixed;
