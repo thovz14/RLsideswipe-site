@@ -752,7 +752,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const defaultConfig = {
         serverIP: 'Rocket League Sideswipe',
-        discordLink: 'https://discord.gg/mQt4J5Brug',
+        discordLink: 'https://discord.gg/FrdRJ5ywCN',
         hasNewUpdates: false,
         staff: [
             { name: 'tienmaster10', avatar: '', badges: [{rank: 'OWNER', rankClass: 'owner-badge'}] }

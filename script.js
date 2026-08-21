@@ -124,7 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function updateDiscordCount(inviteUrl) {
         try {
-            // Extract invite code from URL (e.g. https://discord.gg/mQt4J5Brug)
+            // Extract invite code from URL (e.g. https://discord.gg/FrdRJ5ywCN)
             const match = inviteUrl.match(/discord\.gg\/([a-zA-Z0-9-]+)/);
             if (!match) return;
             const inviteCode = match[1];
