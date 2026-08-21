@@ -1,15 +1,8 @@
 import { db } from './firebase-config.js';
 import { doc, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js';
 
-const PLACEMENT_POINTS = { 1: 100, 2: 75, 3: 50, 4: 25, 5: 15, 6: 10, 7: 5, 8: 5 };
-
-function placementPoints(p) {
-    return PLACEMENT_POINTS[p] ?? 2;
-}
-
 function computePoints(player) {
-    const placements = player.placements || [];
-    return placements.reduce((sum, p) => sum + placementPoints(p), 0);
+    return player.points || 0;
 }
 
 function getInitial(name) {
@@ -77,14 +70,18 @@ function renderTable(sorted) {
         return `
             <tr>
                 <td class="${rankClass(rank)}">${rankIcon(rank)}</td>
-                <td class="lb-username"><i class="fa-brands fa-discord lb-disc-icon"></i>${p.discordUsername}</td>
+                <td class="lb-username">
+                    <div style="display: flex; flex-direction: column;">
+                        <div><i class="fa-brands fa-discord lb-disc-icon"></i>${p.discordUsername}</div>
+                        ${p.sideswipeUsername ? `<div style="font-size: 0.75rem; color: var(--text-muted); font-weight: normal; margin-top: 2px;"><i class="fa-solid fa-gamepad" style="margin-right: 4px;"></i>${p.sideswipeUsername}</div>` : ''}
+                    </div>
+                </td>
                 <td class="lb-pts">${pts}</td>
-                <td class="lb-stat">${p.matchesPlayed ?? 0}</td>
                 <td class="lb-stat">${p.wins ?? 0}</td>
                 <td class="lb-stat">${p.losses ?? 0}</td>
-                <td class="lb-stat">${p.goalsScored ?? 0}</td>
-                <td class="lb-stat">${p.goalsConceded ?? 0}</td>
-                <td class="lb-stat">${(p.placements || []).join(', ') || '—'}</td>
+                <td class="lb-stat">${p.goals ?? 0}</td>
+                <td class="lb-stat">${p.placement || '—'}</td>
+                <td class="lb-stat">${p.tournamentWins ?? 0}</td>
             </tr>
         `;
     }).join('');
@@ -96,12 +93,11 @@ function renderTable(sorted) {
                     <th>#</th>
                     <th>Player</th>
                     <th>Points</th>
-                    <th>Played</th>
                     <th>Wins</th>
                     <th>Losses</th>
-                    <th>GF</th>
-                    <th>GA</th>
-                    <th>Placements</th>
+                    <th>Goals</th>
+                    <th>Placement</th>
+                    <th>Tourney Wins</th>
                 </tr>
             </thead>
             <tbody>${rows}</tbody>

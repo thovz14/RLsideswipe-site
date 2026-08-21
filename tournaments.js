@@ -1,6 +1,5 @@
-// ─── Discord Webhook ──────────────────────────────────────────────────────────
-const WEBHOOK_URL = 'https://discord.com/api/webhooks/1540107203615260733/y28DbDlKsJiHDZmWzbddh7MN4qTWBYncHOWNCcSdRtMJCik2sxTbihuQ6cP6DNrQVgi1';
-
+import { db } from './firebase-config.js';
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 // ─── Tournament Feed ──────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', async () => {
     const tournamentsContainer = document.getElementById('tournaments-container');
@@ -113,46 +112,74 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.addEventListener('click', () => {
             if (validateStep(currentStep)) {
                 hideError();
-                showStep(currentStep + 1);
+                let nextStep = currentStep + 1;
+                // Skip teammate step if 1v1
+                if (currentStep === 5) {
+                    const mode = document.querySelector('input[name="t-mode"]:checked');
+                    if (mode && mode.value === '1v1') {
+                        nextStep = 7;
+                    }
+                }
+                showStep(nextStep);
             }
         });
     });
 
     document.querySelectorAll('.step-prev').forEach(btn => {
-        btn.addEventListener('click', () => { hideError(); showStep(currentStep - 1); });
-    });
-
-    // ── Conditional teammate field ────────────────────────────────────────────
-    document.querySelectorAll('input[name="t-mode"]').forEach(radio => {
-        radio.addEventListener('change', () => {
-            const is2v2 = radio.value === '2v2' && radio.checked;
-            teammateGroup.style.display = is2v2 ? 'flex' : 'none';
+        btn.addEventListener('click', () => {
+            hideError();
+            let prevStep = currentStep - 1;
+            // Skip teammate step if 1v1
+            if (currentStep === 7) {
+                const mode = document.querySelector('input[name="t-mode"]:checked');
+                if (mode && mode.value === '1v1') {
+                    prevStep = 5;
+                }
+            }
+            showStep(prevStep);
         });
     });
 
     // ── Validation ────────────────────────────────────────────────────────────
     function validateStep(step) {
         if (step === 1) {
-            const discord   = document.getElementById('t-discord').value.trim();
-            const username  = document.getElementById('t-username').value.trim();
-            if (!discord)   return showError('Please enter your Discord username.');
-            if (!username)  return showError('Please enter your Rocket League Sideswipe username.');
+            const discord = document.getElementById('t-discord').value.trim();
+            if (!discord) return showError('Please enter your Discord username.');
             return true;
         }
         if (step === 2) {
-            const region = document.querySelector('input[name="t-region"]:checked');
-            const rank   = document.getElementById('t-rank').value;
-            if (!region) return showError('Please select your region.');
-            if (!rank)   return showError('Please select your rank.');
+            const username = document.getElementById('t-username').value.trim();
+            if (!username) return showError('Please enter your Rocket League Sideswipe username.');
             return true;
         }
         if (step === 3) {
-            const mode         = document.querySelector('input[name="t-mode"]:checked');
+            const region = document.querySelector('input[name="t-region"]:checked');
+            if (!region) return showError('Please select your region.');
+            return true;
+        }
+        if (step === 4) {
+            const rank = document.getElementById('t-rank').value;
+            if (!rank) return showError('Please select your rank.');
+            return true;
+        }
+        if (step === 5) {
+            const mode = document.querySelector('input[name="t-mode"]:checked');
+            if (!mode) return showError('Please select a game mode.');
+            return true;
+        }
+        if (step === 6) {
+            const teammate = document.getElementById('t-teammate').value.trim();
+            if (!teammate) return showError('Please enter your teammate\'s username.');
+            return true;
+        }
+        if (step === 7) {
             const availability = document.querySelector('input[name="t-availability"]:checked');
-            const rules        = document.querySelector('input[name="t-rules"]:checked');
-            if (!mode)         return showError('Please select a game mode.');
             if (!availability) return showError('Please answer the availability question.');
-            if (!rules)        return showError('Please answer the rules agreement question.');
+            return true;
+        }
+        if (step === 8) {
+            const rules = document.querySelector('input[name="t-rules"]:checked');
+            if (!rules) return showError('Please answer the rules agreement question.');
             if (rules.value === 'no') return showError('You must agree to the tournament rules to register.');
             return true;
         }
@@ -174,7 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ── Submit → Discord Webhook ──────────────────────────────────────────────
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        if (!validateStep(3)) return;
+        if (!validateStep(8)) return;
 
         const submitBtn = document.getElementById('submit-tournament');
         submitBtn.disabled = true;
@@ -187,7 +214,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const rank      = document.getElementById('t-rank').value;
         const mode         = document.querySelector('input[name="t-mode"]:checked').value;
         const availability = document.querySelector('input[name="t-availability"]:checked').value;
-        const teammate     = document.getElementById('t-teammate').value.trim() || 'N/A';
+        const teammate     = (mode === '1v1') ? 'N/A' : (document.getElementById('t-teammate').value.trim() || 'N/A');
         const timestamp    = new Date().toISOString();
 
         const payload = {
@@ -212,7 +239,17 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         try {
-            const res = await fetch(WEBHOOK_URL, {
+            const docRef = doc(db, 'config', 'website');
+            const docSnap = await getDoc(docRef);
+            let webhookUrl = '';
+            
+            if (docSnap.exists() && docSnap.data().webhookUrl) {
+                webhookUrl = docSnap.data().webhookUrl;
+            } else {
+                throw new Error("Webhook URL is not configured in the admin panel.");
+            }
+
+            const res = await fetch(webhookUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload),

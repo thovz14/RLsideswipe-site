@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const configIp = document.getElementById('config-ip');
     const configDiscord = document.getElementById('config-discord');
+    const configWebhook = document.getElementById('config-webhook');
     const staffListContainer = document.getElementById('staff-list');
     const addStaffBtn = document.getElementById('add-staff-btn');
     const socialMediaListContainer = document.getElementById('social-media-list');
@@ -152,9 +153,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const configData = {
-            serverIP: configIp.value,
-            discordLink: configDiscord.value,
-            hasNewUpdates: configUpdatesBadge.checked,
+            serverIP: configIp ? configIp.value : '',
+            discordLink: configDiscord ? configDiscord.value : '',
+            webhookUrl: configWebhook ? configWebhook.value : '',
+            hasNewUpdates: configUpdatesBadge ? configUpdatesBadge.checked : false,
             updatesBadgeExpiresAt: expiresAt,
             staff: staff,
             updates: updates,
@@ -162,7 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         try {
-            await setDoc(doc(db, 'config', 'website'), configData);
+            await setDoc(doc(db, 'config', 'website'), configData, { merge: true });
             saveStatus.textContent = 'Saved ✓';
             saveStatus.style.color = 'var(--accent-green)';
             setTimeout(() => saveStatus.textContent = '', 3000);
@@ -173,9 +175,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Listen for changes on IP, Discord, and toggle
-    configIp.addEventListener('input', scheduleAutoSave);
-    configDiscord.addEventListener('input', scheduleAutoSave);
+    // Listen for changes on IP, Discord, Webhook and toggle
+    if (configIp) configIp.addEventListener('input', scheduleAutoSave);
+    if (configDiscord) configDiscord.addEventListener('input', scheduleAutoSave);
+    if (configWebhook) configWebhook.addEventListener('input', scheduleAutoSave);
     
     configUpdatesDuration.addEventListener('change', () => {
         const hours = parseInt(configUpdatesDuration.value) || 24;
@@ -781,8 +784,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 await setDoc(docRef, data);
             }
 
-            configIp.value = data.serverIP || defaultConfig.serverIP;
-            configDiscord.value = data.discordLink || defaultConfig.discordLink;
+            if (configIp) configIp.value = data.serverIP || defaultConfig.serverIP;
+            if (configDiscord) configDiscord.value = data.discordLink || defaultConfig.discordLink;
+            if (configWebhook) configWebhook.value = data.webhookUrl || '';
             
             if (data.hasNewUpdates) {
                 if (data.updatesBadgeExpiresAt && Date.now() > data.updatesBadgeExpiresAt) {
@@ -888,22 +892,74 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Add a player row (optionally pre-filled)
     function addPlayerRow(data = {}) {
-        const row = document.createElement('div');
-        row.className = 'lb-player-row';
-        row.innerHTML = `
-            <input class="lbp-username"   type="text"   placeholder="Discord username" value="${data.discordUsername || ''}">
-            <input class="lbp-matches"    type="number" placeholder="0" min="0" value="${data.matchesPlayed ?? ''}">
-            <input class="lbp-wins"       type="number" placeholder="0" min="0" value="${data.wins ?? ''}">
-            <input class="lbp-losses"     type="number" placeholder="0" min="0" value="${data.losses ?? ''}">
-            <input class="lbp-gf"         type="number" placeholder="0" min="0" value="${data.goalsScored ?? ''}">
-            <input class="lbp-ga"         type="number" placeholder="0" min="0" value="${data.goalsConceded ?? ''}">
-            <input class="lbp-placements" type="text"   placeholder="1,2,3" value="${(data.placements || []).join(',')}">
-            <button class="btn btn-secondary lb-remove-btn" title="Remove player" style="padding:6px 10px;flex-shrink:0;">
-                <i class="fa-solid fa-trash"></i>
-            </button>
+        const card = document.createElement('div');
+        card.className = 'lb-player-card';
+        card.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h3 style="font-size: 1.1rem; font-weight: 700; margin: 0; display: flex; align-items: center; gap: 8px;"><i class="fa-solid fa-user" style="color:var(--accent-gold);"></i> Tournament Player</h3>
+                <button class="btn btn-secondary lb-remove-btn" title="Remove player" style="padding:6px 10px;">
+                    <i class="fa-solid fa-trash" style="margin-right:6px;"></i> Remove
+                </button>
+            </div>
+            
+            <div class="lb-card-section">
+                <h4>Player Info</h4>
+                <div class="lb-card-grid">
+                    <div class="lb-form-group">
+                        <label>Discord Username</label>
+                        <input class="lbp-discord" type="text" placeholder="e.g. user#1234" value="${data.discordUsername || ''}">
+                    </div>
+                    <div class="lb-form-group">
+                        <label>Sideswipe Username</label>
+                        <input class="lbp-sideswipe" type="text" placeholder="e.g. ProPlayer" value="${data.sideswipeUsername || ''}">
+                    </div>
+                    <div class="lb-form-group">
+                        <label>Region</label>
+                        <input class="lbp-region" type="text" placeholder="e.g. Europe" value="${data.region || ''}">
+                    </div>
+                    <div class="lb-form-group">
+                        <label>Rank</label>
+                        <input class="lbp-rank" type="text" placeholder="e.g. Grand Champion" value="${data.rank || ''}">
+                    </div>
+                    <div class="lb-form-group">
+                        <label>Teammate</label>
+                        <input class="lbp-teammate" type="text" placeholder="e.g. mate#5678" value="${data.teammate || ''}">
+                    </div>
+                </div>
+            </div>
+
+            <div class="lb-card-section">
+                <h4>Tournament Stats</h4>
+                <div class="lb-card-grid">
+                    <div class="lb-form-group">
+                        <label>Wins</label>
+                        <input class="lbp-wins" type="number" placeholder="0" min="0" value="${data.wins ?? ''}">
+                    </div>
+                    <div class="lb-form-group">
+                        <label>Losses</label>
+                        <input class="lbp-losses" type="number" placeholder="0" min="0" value="${data.losses ?? ''}">
+                    </div>
+                    <div class="lb-form-group">
+                        <label>Goals</label>
+                        <input class="lbp-goals" type="number" placeholder="0" min="0" value="${data.goals ?? ''}">
+                    </div>
+                    <div class="lb-form-group">
+                        <label>Points</label>
+                        <input class="lbp-points" type="number" placeholder="0" min="0" value="${data.points ?? ''}">
+                    </div>
+                    <div class="lb-form-group">
+                        <label>Placement</label>
+                        <input class="lbp-placement" type="text" placeholder="e.g. 1st, Top 4" value="${data.placement || ''}">
+                    </div>
+                    <div class="lb-form-group">
+                        <label>Tournament Wins</label>
+                        <input class="lbp-twins" type="number" placeholder="0" min="0" value="${data.tournamentWins ?? ''}">
+                    </div>
+                </div>
+            </div>
         `;
-        row.querySelector('.lb-remove-btn').addEventListener('click', () => row.remove());
-        playerList.appendChild(row);
+        card.querySelector('.lb-remove-btn').addEventListener('click', () => card.remove());
+        playerList.appendChild(card);
     }
 
     addBtn.addEventListener('click', () => addPlayerRow());
@@ -914,18 +970,20 @@ document.addEventListener('DOMContentLoaded', () => {
         saveStatus.textContent = 'Saving…';
         saveStatus.style.color = 'var(--text-muted)';
 
-        const rows = playerList.querySelectorAll('.lb-player-row');
-        const players = Array.from(rows).map(row => {
-            const raw = row.querySelector('.lbp-placements').value;
-            const placements = raw.split(',').map(s => parseInt(s.trim())).filter(n => !isNaN(n));
+        const cards = playerList.querySelectorAll('.lb-player-card');
+        const players = Array.from(cards).map(card => {
             return {
-                discordUsername: row.querySelector('.lbp-username').value.trim(),
-                matchesPlayed:   parseInt(row.querySelector('.lbp-matches').value)   || 0,
-                wins:            parseInt(row.querySelector('.lbp-wins').value)      || 0,
-                losses:          parseInt(row.querySelector('.lbp-losses').value)    || 0,
-                goalsScored:     parseInt(row.querySelector('.lbp-gf').value)        || 0,
-                goalsConceded:   parseInt(row.querySelector('.lbp-ga').value)        || 0,
-                placements,
+                discordUsername: card.querySelector('.lbp-discord').value.trim(),
+                sideswipeUsername: card.querySelector('.lbp-sideswipe').value.trim(),
+                region: card.querySelector('.lbp-region').value.trim(),
+                rank: card.querySelector('.lbp-rank').value.trim(),
+                teammate: card.querySelector('.lbp-teammate').value.trim(),
+                wins: parseInt(card.querySelector('.lbp-wins').value) || 0,
+                losses: parseInt(card.querySelector('.lbp-losses').value) || 0,
+                goals: parseInt(card.querySelector('.lbp-goals').value) || 0,
+                points: parseInt(card.querySelector('.lbp-points').value) || 0,
+                placement: card.querySelector('.lbp-placement').value.trim(),
+                tournamentWins: parseInt(card.querySelector('.lbp-twins').value) || 0
             };
         }).filter(p => p.discordUsername);
 

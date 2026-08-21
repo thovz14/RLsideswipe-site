@@ -61,10 +61,9 @@
 
             <form id="tournament-form" novalidate>
 
-                <!-- Step 1 — Player Info -->
+                <!-- Step 1 — Discord -->
                 <div class="form-step active" data-step="1">
-                    <p class="step-label">Step 1 of 3 &mdash; Player Info</p>
-
+                    <p class="step-label">Step 1 of 8 &mdash; Discord</p>
                     <div class="form-group">
                         <label for="t-discord">
                             <i class="fa-brands fa-discord" style="margin-right: 6px; color: #5865F2;"></i>Discord Username *
@@ -72,7 +71,15 @@
                         <input type="text" id="t-discord" placeholder="e.g. username or username#0000" required>
                         <span class="field-hint">What is your Discord username?</span>
                     </div>
+                    <div class="modal-nav">
+                        <span></span>
+                        <button type="button" class="btn btn-primary step-next">Next &rarr;</button>
+                    </div>
+                </div>
 
+                <!-- Step 2 — Sideswipe Username -->
+                <div class="form-step" data-step="2">
+                    <p class="step-label">Step 2 of 8 &mdash; In-game Name</p>
                     <div class="form-group">
                         <label for="t-username">
                             <i class="fa-solid fa-gamepad" style="margin-right: 6px; color: var(--accent-gold);"></i>Rocket League Sideswipe Username *
@@ -80,18 +87,15 @@
                         <input type="text" id="t-username" placeholder="e.g. ProPlayer123" required>
                         <span class="field-hint">What is your in-game name?</span>
                     </div>
-
-
                     <div class="modal-nav">
-                        <span></span>
+                        <button type="button" class="btn btn-secondary step-prev">&larr; Back</button>
                         <button type="button" class="btn btn-primary step-next">Next &rarr;</button>
                     </div>
                 </div>
 
-                <!-- Step 2 — Region & Rank -->
-                <div class="form-step" data-step="2">
-                    <p class="step-label">Step 2 of 3 &mdash; Region &amp; Rank</p>
-
+                <!-- Step 3 — Region -->
+                <div class="form-step" data-step="3">
+                    <p class="step-label">Step 3 of 8 &mdash; Region</p>
                     <div class="form-group">
                         <label><i class="fa-solid fa-earth-europe" style="margin-right: 6px;"></i>Region *</label>
                         <span class="field-hint">🌍 What region are you playing from?</span>
@@ -105,7 +109,15 @@
                             <label class="radio-option"><input type="radio" name="t-region" value="Other"> 🌐 Other</label>
                         </div>
                     </div>
+                    <div class="modal-nav">
+                        <button type="button" class="btn btn-secondary step-prev">&larr; Back</button>
+                        <button type="button" class="btn btn-primary step-next">Next &rarr;</button>
+                    </div>
+                </div>
 
+                <!-- Step 4 — Rank -->
+                <div class="form-step" data-step="4">
+                    <p class="step-label">Step 4 of 8 &mdash; Rank</p>
                     <div class="form-group">
                         <label for="t-rank">
                             <i class="fa-solid fa-medal" style="margin-right: 6px; color: var(--accent-gold);"></i>Rank *
@@ -122,17 +134,15 @@
                             <option>Grand Champion</option>
                         </select>
                     </div>
-
                     <div class="modal-nav">
                         <button type="button" class="btn btn-secondary step-prev">&larr; Back</button>
                         <button type="button" class="btn btn-primary step-next">Next &rarr;</button>
                     </div>
                 </div>
 
-                <!-- Step 3 — Mode, Contact & Rules -->
-                <div class="form-step" data-step="3">
-                    <p class="step-label">Step 3 of 3 &mdash; Mode &amp; Contact</p>
-
+                <!-- Step 5 — Game Mode -->
+                <div class="form-step" data-step="5">
+                    <p class="step-label">Step 5 of 8 &mdash; Game Mode</p>
                     <div class="form-group">
                         <label><i class="fa-solid fa-gamepad" style="margin-right: 6px; color: var(--accent-gold);"></i>Game Mode *</label>
                         <span class="field-hint">🎮 Which mode are you registering for?</span>
@@ -141,24 +151,31 @@
                             <label class="radio-option"><input type="radio" name="t-mode" value="2v2"> 🤝 2v2</label>
                         </div>
                     </div>
+                    <div class="modal-nav">
+                        <button type="button" class="btn btn-secondary step-prev">&larr; Back</button>
+                        <button type="button" class="btn btn-primary step-next">Next &rarr;</button>
+                    </div>
+                </div>
 
-                    <!-- Teammate — visible only when 2v2 is selected -->
-                    <div class="form-group teammate-field" id="teammate-group" style="display:none;">
+                <!-- Step 6 — Teammate -->
+                <div class="form-step" data-step="6">
+                    <p class="step-label">Step 6 of 8 &mdash; Teammate</p>
+                    <div class="form-group teammate-field" id="teammate-group">
                         <label for="t-teammate">
-                            <i class="fa-solid fa-user-group" style="margin-right: 6px; color: var(--accent-blue);"></i>Teammate
+                            <i class="fa-solid fa-user-group" style="margin-right: 6px; color: var(--accent-blue);"></i>Teammate *
                         </label>
                         <input type="text" id="t-teammate" placeholder="Teammate's Discord / in-game username">
                         <span class="field-hint">👥 What is your teammate's Discord/in-game username?</span>
                     </div>
-
-                    <div class="form-group">
-                        <label><i class="fa-solid fa-envelope" style="margin-right: 6px; color: var(--accent-blue);"></i>Contact</label>
-                        <span class="field-hint">📩 Need to contact tournament staff? Click below to send us an email.</span>
-                        <a href="mailto:rlsideswipe436@gmail.com?subject=Tournament%20Registration%20Question" class="btn btn-contact-mail" target="_blank">
-                            <i class="fa-solid fa-envelope" style="margin-right: 8px;"></i>Email Tournament Staff
-                        </a>
+                    <div class="modal-nav">
+                        <button type="button" class="btn btn-secondary step-prev">&larr; Back</button>
+                        <button type="button" class="btn btn-primary step-next">Next &rarr;</button>
                     </div>
+                </div>
 
+                <!-- Step 7 — Availability -->
+                <div class="form-step" data-step="7">
+                    <p class="step-label">Step 7 of 8 &mdash; Availability</p>
                     <div class="form-group">
                         <label><i class="fa-solid fa-calendar-check" style="margin-right: 6px; color: var(--accent-gold);"></i>Availability *</label>
                         <span class="field-hint">Are you available for the entire tournament?</span>
@@ -167,7 +184,24 @@
                             <label class="radio-option"><input type="radio" name="t-availability" value="No"> ❌ No</label>
                         </div>
                     </div>
+                    <div class="modal-nav">
+                        <button type="button" class="btn btn-secondary step-prev">&larr; Back</button>
+                        <button type="button" class="btn btn-primary step-next">Next &rarr;</button>
+                    </div>
+                </div>
 
+                <!-- Step 8 — Rules & Contact -->
+                <div class="form-step" data-step="8">
+                    <p class="step-label">Step 8 of 8 &mdash; Rules & Contact</p>
+                    
+                    <div class="form-group" style="margin-bottom: 2rem;">
+                        <label><i class="fa-solid fa-envelope" style="margin-right: 6px; color: var(--accent-blue);"></i>Contact</label>
+                        <span class="field-hint">📩 Need to contact tournament staff? Click below to send us an email.</span>
+                        <a href="mailto:rlsideswipe436@gmail.com?subject=Tournament%20Registration%20Question" class="btn btn-contact-mail" target="_blank" style="margin-top: 10px; display: inline-flex;">
+                            <i class="fa-solid fa-envelope" style="margin-right: 8px;"></i>Email Tournament Staff
+                        </a>
+                    </div>
+                    
                     <div class="form-group">
                         <label><i class="fa-solid fa-shield-halved" style="margin-right: 6px; color: var(--accent-green);"></i>Rules Agreement *</label>
                         <span class="field-hint">✅ Do you agree to follow the tournament rules?</span>
@@ -176,7 +210,6 @@
                             <label class="radio-option radio-option--decline"><input type="radio" name="t-rules" value="no"> ❌ No</label>
                         </div>
                     </div>
-
                     <div class="modal-nav">
                         <button type="button" class="btn btn-secondary step-prev">&larr; Back</button>
                         <button type="submit" class="btn btn-submit" id="submit-tournament">

@@ -69,6 +69,11 @@
                         <label>Discord Invite Link</label>
                         <input type="text" id="config-discord" placeholder="https://discord.gg/...">
                     </div>
+                    <div class="form-group">
+                        <label>Discord Webhook (Toernooi Inschrijvingen)</label>
+                        <input type="password" id="config-webhook" placeholder="https://discord.com/api/webhooks/..." autocomplete="new-password">
+                        <p style="font-size:0.75rem; color:var(--text-muted); margin-top:5px;">Wordt gebruikt voor toernooi aanmeldingen. Vul hier je nieuwe webhook in.</p>
+                    </div>
                 </div>
 
                 <div class="form-section">
@@ -132,17 +137,6 @@
             <div class="lb-admin-header">
                 <h2><i class="fa-solid fa-trophy" style="margin-right:10px;color:var(--accent-gold);"></i>Tournament Leaderboard Manager</h2>
                 <button id="close-lb-admin" class="modal-close" aria-label="Close">&times;</button>
-            </div>
-
-            <div class="lb-col-headers">
-                <span>Discord Username</span>
-                <span>Matches</span>
-                <span>Wins</span>
-                <span>Losses</span>
-                <span>Goals For</span>
-                <span>Goals Against</span>
-                <span>Placements (csv)</span>
-                <span></span>
             </div>
 
             <div id="lb-players-list"></div>

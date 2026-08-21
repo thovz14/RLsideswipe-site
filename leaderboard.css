@@ -248,55 +248,73 @@
     font-weight: 800;
 }
 
-/* Player rows in admin */
-.lb-player-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr auto;
-    gap: 8px;
-    align-items: center;
-    padding: 10px;
+/* Player cards in admin */
+.lb-player-card {
     border: 1px solid var(--card-border);
-    border-radius: 10px;
-    margin-bottom: 10px;
-    background: rgba(255,255,255,0.5);
-    font-size: 0.85rem;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    background: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+    transition: all 0.3s ease;
 }
 
-.lb-player-row input {
+.lb-player-card:hover {
+    background: rgba(255, 255, 255, 0.6);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.05);
+}
+
+.lb-card-section {
+    margin-bottom: 20px;
+}
+
+.lb-card-section:last-child {
+    margin-bottom: 0;
+}
+
+.lb-card-section h4 {
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--accent-gold);
+    margin-bottom: 12px;
+    border-bottom: 1px solid var(--card-border);
+    padding-bottom: 6px;
+    letter-spacing: 0.5px;
+}
+
+.lb-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 15px;
+}
+
+.lb-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.lb-form-group label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.lb-form-group input, .lb-form-group select {
     width: 100%;
-    padding: 7px 10px;
-    border-radius: 6px;
-    background: rgba(255,255,255,0.85);
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.85);
     border: 1px solid var(--card-border);
     color: var(--text-main);
     font-size: 0.85rem;
     font-family: 'Inter', sans-serif;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.lb-player-row input:focus {
+.lb-form-group input:focus, .lb-form-group select:focus {
     outline: none;
     border-color: var(--accent-gold);
-}
-
-.lb-player-row .lb-col-label {
-    font-size: 0.7rem;
-    color: var(--text-muted);
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.lb-col-headers {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr auto;
-    gap: 8px;
-    padding: 0 10px 8px;
-    font-size: 0.7rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: var(--text-muted);
+    box-shadow: 0 0 0 3px rgba(243, 156, 18, 0.15);
 }
